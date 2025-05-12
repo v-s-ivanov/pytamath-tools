@@ -13,6 +13,10 @@ function toCotg() {
     trigonometryFunc = "cotg"
 }
 
+function acot(cot){
+    return Math.atan(1/cot)
+}
+
 function roundNum(number, digits){
     return Math.round(number * Math.pow(10, digits)) / Math.pow(10, digits)
 }
@@ -126,7 +130,7 @@ function calculate() {
         }
         else if (trigonometryFunc == "cotg") {
             cotg = functionValue
-            angleSize = Math.atan(1 / tg) * 180 / Math.PI
+            angleSize = Math.acot(cotg) * 180 / Math.PI
             setCos() 
             setTg()
             setSin()
