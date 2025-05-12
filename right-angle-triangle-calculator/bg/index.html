@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="main.js"></script>
+</head>
+<body>
+    <br><br><br>
+    <h1>Калкулатор за правоъгълен триъгълник</h1>
+    <label for="">
+        <input type="radio" name="func" id="sin" onclick="toSin()"><label for="sin">sin</label>
+        <input type="radio" name="func" id="cos" onclick="toCos()"><label for="cos">cos</label>
+        <input type="radio" name="func" id="tg" onclick="toTg()"><label for="tg">tg</label>
+        <input type="radio" name="func" id="cotg" onclick="toCotg()"><label for="cotg">cotg</label>
+    </label>
+    <input type="text" name="functionValueField" id="functionValueField">
+    <br><br>
+    <label for="angleSizeField">Размер на ъгъла</label>
+    <input type="text" name="angleSizeField" id="angleSizeField" placeholder="<90 градуса">
+    <br><br>
+    <label for="oppositeSideField">Срещуположен катет</label>
+    <input type="text" name="oppositeSideField" id="oppositeSideField">
+    <br><br>
+    <label for="adjacentSideField">Прилежащ катет</label>
+    <input type="text" name="adjacentSideField" id="adjacentSideField">
+    <br><br>
+    <label for="hypotenuseField">Хипотенуза</label>
+    <input type="text" name="hypotenuseField" id="hypotenuseField">
+    <br><br>
+    <input type="button" value="Calculate" onclick="calculate()">
+
+    <br><br><br><br>
+
+    <h4 id="result">
+        
+    </h4>
+</body>
+</html>

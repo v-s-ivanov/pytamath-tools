@@ -130,7 +130,7 @@ function calculate() {
         }
         else if (trigonometryFunc == "cotg") {
             cotg = functionValue
-            angleSize = Math.acot(cotg) * 180 / Math.PI
+            angleSize = Math.atan(1/cotg) * 180 / Math.PI
             setCos() 
             setTg()
             setSin()
