@@ -1,155 +1,212 @@
-let trigonometryFunc = ""
+/* This is the right angle triangle calculator.
+PART OF: v-s-ivanov/triangle-calculator
+REPO: https://github.com/v-s-ivanov/triangle-calculator
+VISIT AT: https://v-s-ivanov.github.io/triangle-calculator
 
+    WARNING: The functions Math.sin(), Math.cos(), Math.tan(), 
+            Pytamath.csc(), Pytamath.sec(), Pytamath.cot() accept RADIANS
+            instead of degrees and the functions Math.asin(), Math.acos(), 
+            Math.atan(), Pytamath.acsc(), Pytamath.asec(), Pytamath.acot()
+            return RADIANS instead of degrees. Remember to convert with
+            the functions toRadians() and toDegrees().
+*/
+
+const triangle = { // Object with the properties of the triangle
+    alpha: 0, 
+    beta: 0,
+    oppositeSide: 0,
+    adjacentSide: 0,
+    hypotenuse: 0,
+    sin: 0, cos: 0, tan: 0,
+    csc: 0, sec: 0, cot: 0,
+    trigonometryFunc: "",
+    functionValue: 0
+}
+
+// This code sets the trigonometric function when the according radio button is pressed
+// The JS functions are called in HTML
 function toSin() {
-    trigonometryFunc = "sin"
+    triangle.trigonometryFunc = "sin"
 }
 function toCos() {
-    trigonometryFunc = "cos"
+    triangle.trigonometryFunc = "cos"
 }
-function toTg() {
-    trigonometryFunc = "tg"
-}
-function toCotg() {
-    trigonometryFunc = "cotg"
+function toTan() {
+    triangle.trigonometryFunc = "tan"
 }
 
-function acot(cot){
-    return Math.atan(1/cot)
+function toCsc() {
+    triangle.trigonometryFunc = "csc"
+}
+function toSec() {
+    triangle.trigonometryFunc = "sec"
+}
+function toCot() {
+    triangle.trigonometryFunc = "cot"
 }
 
-function roundNum(number, digits){
-    return Math.round(number * Math.pow(10, digits)) / Math.pow(10, digits)
+// Sets the values of all trigonometric functions
+function setFunctions(){ // Is called in calculate()
+    // Regular functions
+    triangle.sin = Math.sin(Pytamath.toRadians(triangle.alpha))
+    triangle.cos = Math.cos(Pytamath.toRadians(triangle.alpha))
+    triangle.tan = Math.tan(Pytamath.toRadians(triangle.alpha))
+
+    //Reciprocal functions
+    triangle.csc = Pytamath.csc(Pytamath.toRadians(triangle.alpha))
+    triangle.sec = Pytamath.sec(Pytamath.toRadians(triangle.alpha))
+    triangle.cot = Pytamath.cot(Pytamath.toRadians(triangle.alpha))
 }
 
-function calculate() {
-    let functionValue = document.getElementById("functionValueField").value,
-        angleSize = document.getElementById("angleSizeField").value,
-        oppositeSide = document.getElementById("oppositeSideField").value,
-        adjacentSide = document.getElementById("adjacentSideField").value,
-        hypotenuse = document.getElementById("hypotenuseField").value
+// Sets the sides of the triangles
+function setSides(){ // Is called in calculate()
 
-    let sin, cos, tg, cotg
+    // If we have the opposite side and the hypotenuse
+    if(triangle.oppositeSide != "" && 
+        triangle.hypotenuse != ""){ 
 
-    let fatalError = ""
+        triangle.sin = triangle.oppositeSide / triangle.hypotenuse
 
-    function setSin(){sin = Math.sin(angleSize * Math.PI / 180)}
-    function setCos(){cos = Math.cos(angleSize * Math.PI / 180)}
-    function setTg(){tg = Math.tan(angleSize * Math.PI / 180)}
-    function setCotg(){cotg = 1 / Math.tan(angleSize * Math.PI / 180)}
+        triangle.alpha = Pytamath.toDegrees(Math.asin(triangle.sin))
+        setFunctions()
 
-    function setSides(){
-        if(oppositeSide != "" && 
-            hypotenuse != ""){
+        triangle.adjacentSide = triangle.hypotenuse * triangle.cos
+    }
+    // If we have the adjacent side and the hypotenuse
+    else if(triangle.adjacentSide != "" && 
+        triangle.hypotenuse != ""){
+        triangle.cos = triangle.adjacentSide / triangle.hypotenuse
+        triangle.alpha = Pytamath.toDegrees(Math.acos(triangle.cos))
+        setFunctions()
 
-            sin = oppositeSide / hypotenuse
+        triangle.oppositeSide = triangle.hypotenuse * triangle.sin
+    }
+    // If we have the opposite and adjacent side
+    else if(triangle.oppositeSide != "" && 
+        triangle.adjacentSide != ""){
+        triangle.tan = triangle.oppositeSide / triangle.adjacentSide
 
-            angleSize = Math.asin(sin) * 180 / Math.PI
-            setCos()
-            setTg()
-            setCotg()
+        triangle.alpha = Pytamath.toDegrees(Math.atan(triangle.tan))
+        setFunctions()
 
-            adjacentSide = hypotenuse * cos
+        triangle.hypotenuse = triangle.adjacentSide / triangle.cos
+    }
+    // If we only have the opposite side
+    else if(triangle.oppositeSide != ""){
+        triangle.hypotenuse = triangle.oppositeSide / triangle.sin
+        triangle.adjacentSide = triangle.hypotenuse * triangle.cos
+    }
+    // If we only have the adjacent side
+    else if(triangle.adjacentSide != ""){
+        triangle.hypotenuse = triangle.adjacentSide / triangle.cos
+        triangle.oppositeSide = triangle.hypotenuse * triangle.sin
+    }
+    // If we only have the hypotenuse
+    else if(triangle.hypotenuse != ""){
+        triangle.adjacentSide = triangle.hypotenuse * triangle.cos
+        triangle.oppositeSide = triangle.hypotenuse * triangle.sin
+    }
+    // If we don't have any side
+    else{ // A triangle cannot be fully solved with just the angles
+        fatalError += "Няма достатъчно информация, <br\> трябва да попълните 2 полета!"
+    }
+}
+
+// Writing the result to the HTML document
+function writeToDoc(){ // Is called in calculate()
+    document.getElementById("result").innerHTML = 
+    `sin = ${Pytamath.roundNum(triangle.sin, 2)}<br\>
+    csc = ${Pytamath.roundNum(triangle.csc, 2)}<br\><br\>
+
+    cos = ${Pytamath.roundNum(triangle.cos, 2)}<br\>
+    sec = ${Pytamath.roundNum(triangle.sec, 2)}<br\><br\>
+
+    tan = ${Pytamath.roundNum(triangle.tan, 2)}<br\>
+    cot = ${Pytamath.roundNum(triangle.cot, 2)}<br\>
+    <br\>
+    Ъгъл 1 = ${Pytamath.roundNum(triangle.alpha, 2)}<br\>
+
+    Ъгъл 2 = ${Pytamath.roundNum(triangle.beta, 2)}<br\>
+    <br\>
+    Прилежащ катет = ${Pytamath.roundNum(triangle.adjacentSide, 2)}<br\>
+    Срещуположен катет = ${Pytamath.roundNum(triangle.oppositeSide, 2)}<br\>
+    Хипотенуза = ${Pytamath.roundNum(triangle.hypotenuse, 2)}`
+}
+
+// The main function. It's used to calculate the triangle and to show the results to the user
+function calculate() { // Is called in the HTML document
+    // Setting the triangle properties
+    triangle.functionValue = document.getElementById("functionValueField").value,
+    triangle.alpha = document.getElementById("angleSizeField").value,
+    triangle.oppositeSide = document.getElementById("oppositeSideField").value,
+    triangle.adjacentSide = document.getElementById("adjacentSideField").value,
+    triangle.hypotenuse = document.getElementById("hypotenuseField").value
+
+    let fatalError = "" // Variable for error (just in case)
+
+    // If a function value is set
+    if (triangle.functionValue != "") {
+        // If the function is sin
+        if (triangle.trigonometryFunc == "sin") {
+            triangle.sin = triangle.functionValue
+            triangle.alpha = Pytamath.toDegrees(Math.asin(triangle.sin)) // Finding the angle using inverse sin.
+            /* WARNING: The functions Math.sin(), Math.cos(), Math.tan(), 
+            Pytamath.csc(), Pytamath.sec(), Pytamath.cot() accept RADIANS
+            instead of degrees and the functions Math.asin(), Math.acos(), 
+            Math.atan(), Pytamath.acsc(), Pytamath.asec(), Pytamath.acot()
+            return RADIANS instead of degrees. Remember to convert with
+            the functions toRadians() and toDegrees().
+            */
+            setFunctions()
         }
-        else if(adjacentSide != "" && 
-            hypotenuse != ""){
-
-            cos = adjacentSide / hypotenuse
-            angleSize = Math.acos(cos) * 180 / Math.PI
-            setSin()
-            setTg()
-            setCotg()
-
-            oppositeSide = hypotenuse * sin
+        // If the function is cos
+        else if (triangle.trigonometryFunc == "cos") {
+            triangle.cos = triangle.functionValue
+            triangle.alpha = Pytamath.toDegrees(Math.acos(triangle.cos))
+            setFunctions()
         }
-        else if(oppositeSide != "" && 
-            adjacentSide != ""){
-
-            tg = oppositeSide / adjacentSide
-    
-            angleSize = Math.atan(tg) * 180 / Math.PI
-            setCos()
-            setSin()
-            setCotg()
-    
-            hypotenuse = adjacentSide / cos
+        // You get the point
+        else if (triangle.trigonometryFunc == "tan") {
+            triangle.tan = triangle.functionValue
+            triangle.alpha = Pytamath.toDegrees(Math.atan(triangle.tan))
+            setFunctions()
         }
-        else if(oppositeSide != ""){
-            hypotenuse = oppositeSide / sin
-            adjacentSide = hypotenuse * cos
+        // The standard Math library doesn't have reciprocal functions (csc, sec, cot).
+        // To get them, we use the Pytamath library.
+        if (triangle.trigonometryFunc == "csc") {
+            triangle.csc = triangle.functionValue
+            triangle.alpha = Pytamath.toDegrees(Pytamath.acsc(triangle.csc))
+            setFunctions()
         }
-        else if(adjacentSide != ""){
-            hypotenuse = adjacentSide / cos
-            oppositeSide = hypotenuse * sin
+        else if (triangle.trigonometryFunc == "sec") {
+            triangle.sec = triangle.functionValue
+            triangle.alpha = Pytamath.toDegrees(Pytamath.asec(triangle.sec))
+            setFunctions()
         }
-        else if(hypotenuse != ""){
-            adjacentSide = hypotenuse * cos
-            oppositeSide = hypotenuse * sin
+        else if (triangle.trigonometryFunc == "cot") {
+            triangle.cot = triangle.functionValue
+            triangle.alpha = Pytamath.toDegrees(Pytamath.acot(triangle.cot))
+            setFunctions()
         }
-        else{
-            fatalError += "Data not enough, <br\> you have to fill at least 2 fields!"
+        else{ // If a trigonometric function isn't set and there is a value
+            fatalError += "Не е избрана тригонометрична функция! <br\>"
+            // Throw an error
         }
     }
-
-    function writeToDoc(){
-        document.getElementById("result").innerHTML = 
-        `sin = ${roundNum(sin, 2)}<br\>
-        cos = ${roundNum(cos, 2)}<br\>
-        tg = ${roundNum(tg, 2)}<br\>
-        cotg = ${roundNum(cotg, 2)}<br\>
-        <br\>
-        Ъгъл 1 = ${roundNum(angleSize, 2)}<br\>
-
-        Ъгъл 2 = ${roundNum(90 - angleSize, 2)}<br\>
-        <br\>
-        Прилежащ катет = ${roundNum(adjacentSide, 2)}<br\>
-        Срещуположен катет = ${roundNum(oppositeSide, 2)}<br\>
-        Хипотенуза = ${roundNum(hypotenuse, 2)}`
+    else if(triangle.alpha != ""){ // If an angle value is set
+        setFunctions() // Set the trigonometric functions
     }
-
-    if (functionValue != "") {
-        if (trigonometryFunc == "sin") {
-            sin = functionValue
-            angleSize = Math.asin(sin) * 180 / Math.PI
-            setCos() 
-            setTg()
-            setCotg()
-        }
-        else if (trigonometryFunc == "cos") {
-            cos = functionValue
-            angleSize = Math.acos(cos) * 180 / Math.PI
-            setSin() 
-            setTg()
-            setCotg()
-        }
-        else if (trigonometryFunc == "tg") {
-            tg = functionValue
-            angleSize = Math.atan(tg) * 180 / Math.PI
-            setCos() 
-            setSin()
-            setCotg()
-        }
-        else if (trigonometryFunc == "cotg") {
-            cotg = functionValue
-            angleSize = Math.atan(1/cotg) * 180 / Math.PI
-            setCos() 
-            setTg()
-            setSin()
-        }
-        else{
-            fatalError += "No trigonometric function selected! <br\>"
-        }
-    }
-    else if(angleSize != ""){
-        setSin()
-        setCos() 
-        setTg()
-        setCotg()
-    }
-    setSides()
-    if(fatalError == ""){
-        writeToDoc()
+    setSides() // Set the sides
+    triangle.beta = 90 - triangle.alpha
+    if(fatalError == ""){ // If there is no error
+        writeToDoc() // Write the result
     }
     else{
-        document.getElementById("result").innerHTML = "ERROR: " + fatalError
+        document.getElementById("result").innerHTML = "ERROR: " + fatalError // Show the error
     }
 }
+/*-Added a home page
+-Added Bulgarian
+-Added reciprocal functions - cosecant (csc) and secant (sec)
+-Added the pytamath library
+-Fixed some typos*/
