@@ -35,4 +35,3 @@ Pytamath.toRadians = function(num){ // Degrees to radians converter
 Pytamath.toDegrees = function(num){ // Radians to degrees converter
     return num * 180 / Math.PI;
 }
-
