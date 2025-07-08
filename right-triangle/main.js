@@ -7,8 +7,8 @@ VISIT AT: https://v-s-ivanov.github.io/triangle-calculator
             Pytamath.csc(), Pytamath.sec(), Pytamath.cot() accept RADIANS
             instead of degrees and the functions Math.asin(), Math.acos(), 
             Math.atan(), Pytamath.acsc(), Pytamath.asec(), Pytamath.acot()
-            return RADIANS instead of degrees. Remember to convert with
-            the functions toRadians() and toDegrees().
+            return RADIANS instead of degrees. Remember to convert values 
+            using the functions Pytamath.toRadians() and Pytamath.toDegrees().
 */
 
 const triangle = { // Object with the properties of the triangle
@@ -28,6 +28,8 @@ const triangle = { // Object with the properties of the triangle
     fatalError: "",
     message: ""
 }
+
+const language = document.getElementById("ratg").lang
 
 // The main function. It's used to calculate the triangle and to show the results to the user ------------------------------------------------------------------------------------
 function calculate() { // Is called in the HTML document
@@ -51,7 +53,7 @@ function calculate() { // Is called in the HTML document
     setAngle()
     
     incircle()
-    fromHeight()
+    fromHeight() // Sets values from the height
     setSides() // Set the sides
     triangle.beta = 90 - triangle.alpha
     if(triangle.excircleRadius == "")
@@ -72,16 +74,30 @@ function calculate() { // Is called in the HTML document
 function moreFields(){ // This function adds the additional fields, is called in the HTML document
     triangle.moreFields = !triangle.moreFields
     if(document.getElementById("moreFieldsDiv").innerHTML == ""){
-        document.getElementById("moreFieldsDiv").innerHTML = 
-        `<label for="incircleField">Радиус на вписана окръжност:</label>
-        <input type="text" name="incircleField" id="incircleField">
-        <br><br>
-        <label for="excircleField">Радиус на описана окръжност:</label>
-        <input type="text" name="excircleField" id="excircleField">
-        <br><br>
-        <label for="heightField">Височина:</label>
-        <input type="text" name="heightField" id="heightField">
-        <br><br></br>`
+        if(language == "en"){
+            document.getElementById("moreFieldsDiv").innerHTML = 
+            `<label for="incircleField">Incircle radius:</label>
+            <input type="text" name="incircleField" id="incircleField">
+            <br><br>
+            <label for="excircleField">Excircle radius:</label>
+            <input type="text" name="excircleField" id="excircleField">
+            <br><br>
+            <label for="heightField">Height:</label>
+            <input type="text" name="heightField" id="heightField">
+            <br><br></br>`
+        }
+        else{
+            document.getElementById("moreFieldsDiv").innerHTML = 
+            `<label for="incircleField">Радиус на вписана окръжност:</label>
+            <input type="text" name="incircleField" id="incircleField">
+            <br><br>
+            <label for="excircleField">Радиус на описана окръжност:</label>
+            <input type="text" name="excircleField" id="excircleField">
+            <br><br>
+            <label for="heightField">Височина:</label>
+            <input type="text" name="heightField" id="heightField">
+            <br><br></br>`
+        }
     }
     else document.getElementById("moreFieldsDiv").innerHTML = ""
 }
@@ -171,42 +187,73 @@ function setSides(){ // Is called in calculate()
     }
     // If we don't have any side
     else{ // A triangle cannot be fully solved with just the angles
-        triangle.fatalError += "Няма достатъчно информация, <br\> трябва да попълните 2 полета!"
+        if(language == en)
+            triangle.fatalError += "Data not enough, <br\> you have to fill at least 2 fields!"
+        else triangle.fatalError += "Няма достатъчно информация, <br\> трябва да попълните 2 полета!"
     }
 }
 
 // Writing the result to the HTML document
 function writeToDoc(){ // Is called in calculate()
-    triangle.message = `sin = ${Pytamath.roundNum(triangle.sin, 2)}<br\>
-    cosec = ${Pytamath.roundNum(triangle.csc, 2)}<br\><br\>
+    if(language == "en"){
+        triangle.message = `sin = ${Pytamath.roundNum(triangle.sin, 2)}<br>
+        csc = ${Pytamath.roundNum(triangle.csc, 2)}<br><br>
 
-    cos = ${Pytamath.roundNum(triangle.cos, 2)}<br\>
-    sec = ${Pytamath.roundNum(triangle.sec, 2)}<br\><br\>
+        cos = ${Pytamath.roundNum(triangle.cos, 2)}<br\>
+        sec = ${Pytamath.roundNum(triangle.sec, 2)}<br><br>
 
-    tg = ${Pytamath.roundNum(triangle.tan, 2)}<br\>
-    cotg = ${Pytamath.roundNum(triangle.cot, 2)}<br\>
-    <br\>
-    Ъгъл 1 = ${Pytamath.roundNum(triangle.alpha, 2)}<br\>
+        tan = ${Pytamath.roundNum(triangle.tan, 2)}<br>
+        cot = ${Pytamath.roundNum(triangle.cot, 2)}<br>
+        <br>
+        Angle 1 = ${Pytamath.roundNum(triangle.alpha, 2)}<br>
 
-    Ъгъл 2 = ${Pytamath.roundNum(triangle.beta, 2)}<br\>
-    <br\>
-    Прилежащ катет = ${Pytamath.roundNum(triangle.adjacentSide, 2)}<br\>
-    Срещуприлежащ катет = ${Pytamath.roundNum(triangle.oppositeSide, 2)}<br\>
-    Хипотенуза = ${Pytamath.roundNum(triangle.hypotenuse, 2)}`
+        Angle 2 = ${Pytamath.roundNum(triangle.beta, 2)}<br>
+        <br>
+        Adjacent side = ${Pytamath.roundNum(triangle.adjacentSide, 2)}<br>
+        Opposite side = ${Pytamath.roundNum(triangle.oppositeSide, 2)}<br>
+        Hypotenuse = ${Pytamath.roundNum(triangle.hypotenuse, 2)}`
 
-    if(triangle.moreFields){
-        triangle.message += `<br> <br>
-        Радиус на вписана окръжност = ${Pytamath.roundNum(triangle.incircleRadius,2)}<br>
-        Радиус на описана окръжност = ${Pytamath.roundNum(triangle.excircleRadius,2)}<br>
-        Височина = ${Pytamath.roundNum(triangle.height,2)}
-        `
+        if(triangle.moreFields){
+            triangle.message += `<br> <br>
+            Incircle radius = ${Pytamath.roundNum(triangle.incircleRadius,2)}<br>
+            Excircle radius = ${Pytamath.roundNum(triangle.excircleRadius,2)}<br>
+            Height = ${Pytamath.roundNum(triangle.height,2)}
+            `
+        }
+    }
+    else{
+        triangle.message = `sin = ${Pytamath.roundNum(triangle.sin, 2)}<br\>
+        cosec = ${Pytamath.roundNum(triangle.csc, 2)}<br\><br\>
+
+        cos = ${Pytamath.roundNum(triangle.cos, 2)}<br\>
+        sec = ${Pytamath.roundNum(triangle.sec, 2)}<br\><br\>
+
+        tg = ${Pytamath.roundNum(triangle.tan, 2)}<br\>
+        cotg = ${Pytamath.roundNum(triangle.cot, 2)}<br\>
+        <br\>
+        Ъгъл 1 = ${Pytamath.roundNum(triangle.alpha, 2)}<br\>
+
+        Ъгъл 2 = ${Pytamath.roundNum(triangle.beta, 2)}<br\>
+        <br\>
+        Прилежащ катет = ${Pytamath.roundNum(triangle.adjacentSide, 2)}<br\>
+        Срещуприлежащ катет = ${Pytamath.roundNum(triangle.oppositeSide, 2)}<br\>
+        Хипотенуза = ${Pytamath.roundNum(triangle.hypotenuse, 2)}`
+
+        if(triangle.moreFields){
+            triangle.message += `<br> <br>
+            Радиус на вписана окръжност = ${Pytamath.roundNum(triangle.incircleRadius,2)}<br>
+            Радиус на описана окръжност = ${Pytamath.roundNum(triangle.excircleRadius,2)}<br>
+            Височина = ${Pytamath.roundNum(triangle.height,2)}
+            `
+        }
     }
     document.getElementById("result").innerHTML = triangle.message
 }
 
 function incircle(){ // Finding the adjacent side from the incircle radius
     if(triangle.incircleRadius != "")
-        triangle.adjacentSide = (triangle.cos * 2 * triangle.incircleRadius) / (triangle.cos + triangle.sin - 1)
+        triangle.adjacentSide = (triangle.cos * 2 * triangle.incircleRadius) / (triangle.cos * (1 + triangle.tan) - 1)
+    // The formula is derived from (a+b-c)/2 = r
 }
 
 function excircle(){ // Finding the hypotenuse from the excircle radius
@@ -231,7 +278,7 @@ function fromHeight(){ // Solving the triangle from the height and another value
             triangle.alpha = Pytamath.toDegrees(Math.asin(triangle.sin))
         }
         else if(triangle.adjacentSide != ""){ // If we also have the adjacent side
-            triangle.adjacentProjection = Math.sqrt(Math.pow(triangle.adjacentProjection,2) - Math.pow(triangle.height,2))
+            triangle.adjacentProjection = Math.sqrt(Math.pow(triangle.adjacentSide,2) - Math.pow(triangle.height,2))
             triangle.oppositeProjection = Math.pow(triangle.height,2) / triangle.adjacentProjection
             triangle.hypotenuse = triangle.adjacentProjection + triangle.oppositeProjection 
 
@@ -247,7 +294,6 @@ function fromHeight(){ // Solving the triangle from the height and another value
         setFunctions() // Set all other trigonometric functions
     }
 }
-
 function setAngle(){
     // If a function value is set
     if (triangle.functionValue != "") {
@@ -259,8 +305,8 @@ function setAngle(){
             Pytamath.csc(), Pytamath.sec(), Pytamath.cot() accept RADIANS
             instead of degrees and the functions Math.asin(), Math.acos(), 
             Math.atan(), Pytamath.acsc(), Pytamath.asec(), Pytamath.acot()
-            return RADIANS instead of degrees. Remember to convert with
-            the functions toRadians() and toDegrees().
+            return RADIANS instead of degrees. Remember to convert values 
+            using the functions Pytamath.toRadians() and Pytamath.toDegrees().
             */
             setFunctions()
         }
@@ -294,7 +340,9 @@ function setAngle(){
             setFunctions()
         }
         else{ // If a trigonometric function isn't set and there is a value
-            triangle.fatalError += "Не е избрана тригонометрична функция! <br\>"
+            if(language == "en")
+                triangle.fatalError += "No trigonometric function selected! <br\>"
+            else triangle.fatalError += "Не е избрана тригонометрична функция! <br\>"
             // Throw an error
         }
     }
